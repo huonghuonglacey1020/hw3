@@ -1,84 +1,103 @@
+var num = [];
+var pLength = parseInt(prompt("how long you want your password between 8 to 128 ?"));
+alert("Click ok if you agree!");
+var password = ("");
 
-generateBtn.addEventListener("click", writePassword);
+var num = [];
+var pLength = parseInt(prompt("How long do you need your Password be?(Enter number from 8-128)"));
+alert("Press Generate Password to go!");
+var password = ("");
 
-copyBtn.addEventListener("click", copyToClipboard);
+//Generate random special
+function ranSpec() {
+    var sStr = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~ '"
+    return sStr[Math.floor(sStr.length * Math.random())];
+};
+
+//Generate random lowercase character
+function ranLChar() {
+    var cStr = "abcdefghijklmnopqrstuvwxyz";
+    return cStr[Math.floor(cStr.length * Math.random())];
+}
+
+//generate random uppercase character
+function ranUChar() {
+    var CaStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return CaStr[Math.floor(CaStr.length * Math.random())];
+}
+
+//generate random number
+function ranNum() {
+    var numStr = "0123456789";
+    return numStr[Math.floor(numStr.length * Math.random())];
+}
 
 
-function generateP() {
-    var lower = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-    var upper = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-    var numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    var symbols = ["@", "%", "+", "\\", "/", "'", "!", "#", "$", "^", "?", ":", ",", ")", "(", "}", "{", "]", "[", "~", "-", "_", "."]
-    var type = [];
+//confirm logic for the numbers of needed types
+function passType() {
+    if (confirm("include Special characters?")) {
+        num.push(1);
+    }
+
+    if (confirm("include lowercase character?")) {
+        num.push(2);
+    }
+    if (confirm("include uppercase character?")) {
+        num.push(3);
+    }
+    if (confirm("include numbers?")) {
+        num.push(4);
+    }
+}
+
+
+//generate random function calls for given times
+function generate() {
+    for (i = 0; i < pLength; i++) {
+        var temp = Math.floor(num.length * Math.random());
+        var ge = num[temp];
+
+        if (ge == 1) {
+            password += ranSpec();
+        } else if (ge == 2) {
+            password += ranUChar();
+        } else if (ge == 3) {
+            password += ranLChar();
+        } else if (ge == 4) {
+            password += ranNum();
+        }
+
+    }
+}
+
+//Called from outside
+var buttonT = document.querySelector("#generate");
+var tag = document.querySelector("#password");
+var copyC = document.querySelector("#copy");
+
+buttonT.addEventListener("click", function() {
+    tag.innerHTML = "";
+    password = ("");
+    num = [];
+    passType();
+    while (num.length == 0) {
+        alert("Must select at least one character type for password")
+        passType();
+    }
+
+    generate();
+    tag.textContent = password;
+});
+copyC.addEventListener("click", function() {
+    var copyText = document.getElementById("password");
+    copyText.select();
+    //copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy")
+    alert(
+        "Your password " + passwordText.value + " was copied to your clipboard.")
     
-    function characterType() {
-        specialCharacter = confirm("Do you want to have special character in your password?");
-        if (specialCharacter === true) {
-            type.push(symbols);
+});
 
-        }
-        else { "" };
-        numbercharacter = confirm("Do you want to have number in your password?")
-        if (numbercharacter === true) {
-            type.push(numbers)
-        }
-        else { "" };
-        upperCharacter = confirm("Do you want to have uppercase in your password?")
-        if (lowerCharacter === true) {
-            type.push(upper)
-        }
-        else { "" }
-        lowerCharacter = confirm("Do you want to have lowercase in your password?")
-        if (lowerCharacter === true) {
-            type.push(lower)
-        }
-        else { "" }
-
-    }
-    var type = [];
-    if (type == "") {
-        alert("you need to choose at least one character type")
-        return;
-    }
-    var myJ = JSON.stringify(type);
-    return type.sort().join('');
-
-}
-console.log(characterType);
-var size = prompt("please choose what length you want your password ?")
-if (size < 8 || size > 128) {
-    alert("Minimum is 8 and maximum is 128")
-    return
-}
-for (var i = 0; i < size; i++) {
-    password = password + type.chaArt(Math.floor(Math.random() * Math.floor(type.size - 1)))
-}
-
-generateP();
-
-// Get references to the #copy and #generate elements
-var copyBtn = document.querySelector("#copy");
-var generateBtn = document.querySelector("#generate");
-
-// Write password to the #password input
-function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
-
-  copyBtn.removeAttribute("disabled");
-  copyBtn.focus();
-}
-
-function copyToClipboard() {
-  var passwordText = document.querySelector("#password");
-
-  passwordText.select();
-  document.execCommand("copy");
-
-  alert(
-    "Your password " + passwordText.value + " was copied to your clipboard."
-  );
-}
+  
+  
 
